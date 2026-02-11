@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Music Chat Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+  <!-- Hamburger Button -->
+  <button id="hamburger">&#9776;</button>
+
+  <!-- Music Info Panel -->
+  <div id="left">
+    <img id="cover" src="" alt="cover" />
+    <div id="info">
+      <div id="title">No song playing</div>
+      <div id="status"></div>
+      <input type="range" id="seek" min="0" max="100" value="0" />
+      <div id="times"><span id="curTime">0:00</span><span id="durTime">0:00</span></div>
+    </div>
+  </div>
+
+  <!-- Chat Area -->
+  <div id="right">
+    <div id="chat"></div>
+    <div id="input">
+      <input id="msgInput" placeholder="Type !play or !skip or chat…" autocomplete="off" />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
+
+  <div id="debugLog"></div>
+
+  <!-- JS Libraries -->
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+  <!-- Your Scripts -->
+  <script src="{{ url_for('static', filename='js/socketHandler.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>
