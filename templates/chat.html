@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Moozik Room</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/chat.css') }}">
+
+</head>
+
+<body>
+
+
+
+<div class="app">
+
+
+<main class="main">
+
+<header class="topbar">
+<div class="room-title">Music Room</div>
+</header>
+
+<div class="layout">
+
+<div class="player">
+
+<img id="cover">
+
+<div id="title">No song playing</div>
+<div id="status"></div>
+
+<input type="range" id="seek">
+
+<div class="time">
+<span id="curTime">0:00</span>
+<span id="durTime">0:00</span>
+</div>
+
+</div>
+
+<div class="chat">
+
+<div id="chat" class="messages"></div>
+
+<div class="chat-input-row">
+
+<input id="msgInput" placeholder="Type !play or chat…" autocomplete="off">
+
+<button id="sendBtn">Send</button>
+
+</div>
+
+</div>
+
+</div>
+
+</main>
+
+</div>
+
+<script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+
+<!-- IMPORTANT ORDER -->
+<script src="{{ url_for('static', filename='js/player.js') }}"></script>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script src="{{ url_for('static', filename='js/socketHandler.js') }}"></script>
+
+</body>
+</html>
