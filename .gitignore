@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.env/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# HLS audio segments
+hls/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
