@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<title>Moozik Rooms</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+
+<style>
+
+body{
+font-family:'DM Sans',sans-serif;
+background:#0f172a;
+color:white;
+padding:40px;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+.room{
+padding:15px;
+background:#1e293b;
+margin-bottom:10px;
+border-radius:8px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+button{
+padding:8px 16px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Moozik Rooms</h1>
+
+<h2>Create Room</h2>
+
+<input id="roomName" placeholder="Room name">
+<label>
+<input type="checkbox" id="privateRoom"> Private room
+</label>
+
+<button onclick="createRoom()">Create</button>
+
+<h2>Join Private Room</h2>
+
+<input id="inviteCode" placeholder="Invite code">
+<button onclick="joinPrivate()">Join</button>
+
+<h2>Public Rooms</h2>
+
+<div id="roomsList"></div>
+
+</div>
+
+<script src="{{ url_for('static', filename='js/rooms.js') }}"></script>
+
+</body>
+</html>

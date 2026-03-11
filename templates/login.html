@@ -76,61 +76,7 @@ Register
 
 </div>
 
-<script>
-
-async function handleLogin(e){
-e.preventDefault()
-
-const username=document.getElementById("loginUsername").value
-const password=document.getElementById("loginPassword").value
-
-const res = await fetch("/api/login",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({username,password})
-})
-
-const data=await res.json()
-
-if(!res.ok){
-document.getElementById("loginError").innerText=data.error
-return
-}
-
-localStorage.setItem("token",data.token)
-
-window.location="/chat"
-}
-
-async function handleRegister(e){
-e.preventDefault()
-
-const username=document.getElementById("regUsername").value
-const email=document.getElementById("regEmail").value
-const password=document.getElementById("regPassword").value
-
-const res = await fetch("/api/register",{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({username,email,password})
-})
-
-const data=await res.json()
-
-if(!res.ok){
-document.getElementById("registerError").innerText=data.error
-return
-}
-
-localStorage.setItem("token",data.token)
-
-window.location="/chat"
-}
-
-document.getElementById("loginForm").addEventListener("submit",handleLogin)
-document.getElementById("registerForm").addEventListener("submit",handleRegister)
-
-</script>
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
 
 </body>
 </html>

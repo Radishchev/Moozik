@@ -1,7 +1,12 @@
-const room = 'default'
+// room is provided by chat.html
+// <script>const room = "{{ room_code }}"</script>
 
 let socket
 let username = null
+
+if(!room){
+  window.location = "/rooms"
+}
 
 
 function parseJwt(token){
@@ -17,35 +22,23 @@ function parseJwt(token){
 
 const token = localStorage.getItem("token")
 
+if(!token){
+  window.location = "/login"
+}
+
+
 if(token){
 
   const payload = parseJwt(token)
 
   if(payload){
-
     username = payload.username
-
-    document.addEventListener("DOMContentLoaded", () => {
-
-      const el = document.getElementById("sidebarUsername")
-
-      if(el){
-        el.textContent = username
-      }
-
-    })
-
   }
 
 }
 
 
 function initSocket(){
-
-  if(!token){
-    window.location="/login"
-    return
-  }
 
   if(socket){
     try{
@@ -54,10 +47,10 @@ function initSocket(){
   }
 
   socket = io({
-    auth: {
+    auth:{
       token: token
     },
-    transports: ["websocket"]
+    transports:["websocket"]
   })
 
 
@@ -110,6 +103,10 @@ function initSocket(){
 
   socket.on("song_changed", handleSongChange)
 
-  socket.on("stream_ready", () => setTimeout(loadStream, 500))
+  socket.on("stream_ready", () => {
+
+    setTimeout(loadStream, 500)
+
+  })
 
 }

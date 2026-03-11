@@ -1,15 +1,18 @@
 import os
 import logging
 
-from flask import Flask, send_from_directory, render_template, request
+from flask import Flask, send_from_directory, render_template, request, redirect
 from flask_cors import CORS
 from flask_socketio import SocketIO
 
 from config import HLS_ROOT
 from database import init_db
 from auth_routes import auth_bp
+from room_routes import room_bp
+from models import get_room_by_code
 
 import socket_handlers
+
 
 app = Flask(__name__)
 CORS(app)
@@ -26,8 +29,9 @@ socketio = SocketIO(
 # initialize database
 init_db()
 
-# register auth routes
+# register routes
 app.register_blueprint(auth_bp)
+app.register_blueprint(room_bp)
 
 
 @app.route("/")
@@ -40,13 +44,24 @@ def login_page():
     return render_template("login.html")
 
 
-@app.route("/chat")
-def chat():
-    return render_template("chat.html")
+@app.route("/rooms")
+def rooms_page():
+    return render_template("rooms.html")
+
+@app.route("/room/<room_code>")
+def room_page(room_code):
+
+    room = get_room_by_code(room_code)
+
+    if not room:
+        return redirect("/rooms")
+
+    return render_template("chat.html", room_code=room_code, room_name=room["name"])
 
 
 @app.route('/hls/<room>/<path:filename>')
 def serve_hls(room, filename):
+
     path = os.path.join(HLS_ROOT, room, filename)
 
     if not os.path.isfile(path):
@@ -114,5 +129,7 @@ def on_chat(data):
 
 
 if __name__ == '__main__':
+
     os.makedirs(HLS_ROOT, exist_ok=True)
+
     socketio.run(app, host='0.0.0.0', port=5000)

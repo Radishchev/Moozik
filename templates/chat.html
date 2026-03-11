@@ -26,7 +26,7 @@
 <main class="main">
 
 <header class="topbar">
-<div class="room-title">Music Room</div>
+<div class="room-title">{{ room_name }}</div>
 </header>
 
 <div class="layout">
@@ -67,6 +67,9 @@
 
 </div>
 
+<script>
+const room = "{{ room_code }}"
+</script>
 <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 
