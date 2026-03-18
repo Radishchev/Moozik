@@ -17,6 +17,11 @@ import socket_handlers
 app = Flask(__name__)
 CORS(app)
 
+ALLOWED_ORIGINS = [
+    "http://localhost:5000",
+    "http://127.0.0.1:5000"
+]
+
 socketio = SocketIO(
     app,
     cors_allowed_origins="*",
@@ -26,10 +31,8 @@ socketio = SocketIO(
     ping_timeout=60
 )
 
-# initialize database
 init_db()
 
-# register routes
 app.register_blueprint(auth_bp)
 app.register_blueprint(room_bp)
 
@@ -48,6 +51,7 @@ def login_page():
 def rooms_page():
     return render_template("rooms.html")
 
+
 @app.route("/room/<room_code>")
 def room_page(room_code):
 
@@ -56,7 +60,11 @@ def room_page(room_code):
     if not room:
         return redirect("/rooms")
 
-    return render_template("chat.html", room_code=room_code, room_name=room["name"])
+    return render_template(
+        "chat.html",
+        room_code=room_code,
+        room_name=room["name"]
+    )
 
 
 @app.route('/hls/<room>/<path:filename>')
@@ -83,19 +91,25 @@ def handle_connect(auth):
 
     from socket_handlers import verify_token, connected_users
 
+    origin = request.headers.get("Origin")
+
+    if origin not in ALLOWED_ORIGINS:
+        logging.warning(f"[SECURITY] Rejected connection from origin: {origin}")
+        return False
+
     token = None
 
     if auth:
         token = auth.get("token")
 
     if not token:
-        logging.info("Connection rejected: No token")
+        logging.warning("[SECURITY] Rejected connection: No token")
         return False
 
     payload = verify_token(token)
 
     if not payload:
-        logging.info("Connection rejected: Invalid token")
+        logging.warning("[SECURITY] Rejected connection: Invalid token")
         return False
 
     connected_users[request.sid] = payload
