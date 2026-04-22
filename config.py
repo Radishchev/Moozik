@@ -1,7 +1,11 @@
 import os
 import logging
+from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO)
+
+# load environment variables
+load_dotenv()
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -11,6 +15,11 @@ FFMPEG_PATH = "ffmpeg"
 
 DATABASE_PATH = os.path.join(BASE_DIR, "users.db")
 
-JWT_SECRET = "H0gfNpU8Az5lUWxeu6deVaYVMX6X5vd1MI0xaqu433J"
+# JWT settings
+JWT_SECRET = os.getenv("JWT_SECRET")
+
+if not JWT_SECRET:
+    raise Exception("JWT_SECRET environment variable not set!")
+
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRATION_SECONDS = 86400

@@ -9,30 +9,28 @@ if(!room){
 }
 
 
-function parseJwt(token){
+async function fetchCurrentUser(){
+
   try{
-    const base64Url = token.split('.')[1]
-    const base64 = base64Url.replace(/-/g,'+').replace(/_/g,'/')
-    return JSON.parse(atob(base64))
-  }catch(e){
-    return null
-  }
-}
 
+    const res = await fetch("/api/me",{
+      credentials: "include"
+    })
 
-const token = localStorage.getItem("token")
+    if(!res.ok){
+      window.location = "/login"
+      return
+    }
 
-if(!token){
-  window.location = "/login"
-}
+    const data = await res.json()
 
+    username = data.username
 
-if(token){
+  }catch(err){
 
-  const payload = parseJwt(token)
+    console.error("Failed to fetch user:", err)
+    window.location = "/login"
 
-  if(payload){
-    username = payload.username
   }
 
 }
@@ -47,10 +45,8 @@ function initSocket(){
   }
 
   socket = io({
-    auth:{
-      token: token
-    },
-    transports:["websocket"]
+    withCredentials: true,
+    transports: ["websocket"]
   })
 
 
@@ -110,3 +106,12 @@ function initSocket(){
   })
 
 }
+
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+  await fetchCurrentUser()
+
+  initSocket()
+
+})

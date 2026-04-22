@@ -10,6 +10,7 @@ async function handleLogin(e){
         headers:{
             "Content-Type":"application/json"
         },
+        credentials:"include",
         body:JSON.stringify({username,password})
     })
 
@@ -19,8 +20,6 @@ async function handleLogin(e){
         document.getElementById("loginError").innerText = data.error
         return
     }
-
-    localStorage.setItem("token",data.token)
 
     window.location = "/rooms"
 
@@ -40,6 +39,7 @@ async function handleRegister(e){
         headers:{
             "Content-Type":"application/json"
         },
+        credentials:"include",
         body:JSON.stringify({username,email,password})
     })
 
@@ -49,8 +49,6 @@ async function handleRegister(e){
         document.getElementById("registerError").innerText = data.error
         return
     }
-
-    localStorage.setItem("token",data.token)
 
     window.location = "/rooms"
 

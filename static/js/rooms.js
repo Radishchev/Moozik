@@ -1,16 +1,12 @@
-const token = localStorage.getItem("token")
-
-if(!token){
-    window.location="/login"
-}
-
 function enterRoom(code){
     window.location = `/room/${code}`
 }
 
 async function loadRooms(){
 
-    const res = await fetch("/api/rooms/public")
+    const res = await fetch("/api/rooms/public",{
+        credentials: "include"
+    })
 
     const rooms = await res.json()
 
@@ -26,10 +22,15 @@ async function loadRooms(){
 
         div.className = "room"
 
-        div.innerHTML = `
-            <span>${r.name}</span>
-            <button onclick="enterRoom('${r.code}')">Join</button>
-        `
+        const name = document.createElement("span")
+        name.textContent = r.name
+
+        const btn = document.createElement("button")
+        btn.textContent = "Join"
+        btn.onclick = () => enterRoom(r.code)
+
+        div.appendChild(name)
+        div.appendChild(btn)
 
         list.appendChild(div)
 
@@ -51,9 +52,9 @@ async function createRoom(){
 
     const res = await fetch("/api/rooms/create",{
         method:"POST",
+        credentials:"include",
         headers:{
-            "Content-Type":"application/json",
-            "Authorization":"Bearer "+token
+            "Content-Type":"application/json"
         },
         body:JSON.stringify({
             name:name,
@@ -72,7 +73,7 @@ async function createRoom(){
         enterRoom(data.room_code)
 
     }else{
-        alert("Error creating room")
+        alert(data.error || "Error creating room")
     }
 
 }
@@ -87,7 +88,9 @@ async function joinPrivate(){
         return
     }
 
-    const res = await fetch(`/api/rooms/join/${code}`)
+    const res = await fetch(`/api/rooms/join/${code}`,{
+        credentials:"include"
+    })
 
     const data = await res.json()
 

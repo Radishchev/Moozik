@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from models import create_room, get_public_rooms, get_room_by_code_or_invite
-from auth_routes import verify_token, get_token_from_header
+from auth_routes import verify_token, get_token_from_cookie
 
 room_bp = Blueprint("rooms", __name__)
 
@@ -9,7 +9,7 @@ room_bp = Blueprint("rooms", __name__)
 @room_bp.route("/api/rooms/create", methods=["POST"])
 def create():
 
-    token = get_token_from_header(request)
+    token = get_token_from_cookie(request)
     payload = verify_token(token)
 
     if not payload:

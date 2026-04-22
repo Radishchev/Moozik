@@ -85,9 +85,8 @@ def serve_hls(room, filename):
 
     return resp
 
-
 @socketio.on('connect')
-def handle_connect(auth):
+def handle_connect():
 
     from socket_handlers import verify_token, connected_users
 
@@ -97,13 +96,10 @@ def handle_connect(auth):
         logging.warning(f"[SECURITY] Rejected connection from origin: {origin}")
         return False
 
-    token = None
-
-    if auth:
-        token = auth.get("token")
+    token = request.cookies.get("token")
 
     if not token:
-        logging.warning("[SECURITY] Rejected connection: No token")
+        logging.warning("[SECURITY] Rejected connection: Missing token")
         return False
 
     payload = verify_token(token)
