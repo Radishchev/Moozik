@@ -7,7 +7,7 @@ from flask_socketio import SocketIO
 
 from config import HLS_ROOT
 from database import init_db
-from auth_routes import auth_bp
+from auth_routes import auth_bp, verify_token
 from room_routes import room_bp
 from models import get_room_by_code
 
@@ -37,6 +37,22 @@ app.register_blueprint(auth_bp)
 app.register_blueprint(room_bp)
 
 
+# ---------------- AUTH HELPER ----------------
+
+def require_auth():
+
+    token = request.cookies.get("token")
+
+    if not token:
+        return None
+
+    payload = verify_token(token)
+
+    return payload
+
+
+# ---------------- PAGES ----------------
+
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -47,13 +63,34 @@ def login_page():
     return render_template("login.html")
 
 
+@app.route("/logout")
+def logout():
+
+    resp = redirect("/")
+
+    resp.delete_cookie("token")
+
+    return resp
+
+
 @app.route("/rooms")
 def rooms_page():
+
+    user = require_auth()
+
+    if not user:
+        return redirect("/login")
+
     return render_template("rooms.html")
 
 
 @app.route("/room/<room_code>")
 def room_page(room_code):
+
+    user = require_auth()
+
+    if not user:
+        return redirect("/login")
 
     room = get_room_by_code(room_code)
 
@@ -66,6 +103,8 @@ def room_page(room_code):
         room_name=room["name"]
     )
 
+
+# ---------------- HLS STREAM ----------------
 
 @app.route('/hls/<room>/<path:filename>')
 def serve_hls(room, filename):
@@ -84,6 +123,9 @@ def serve_hls(room, filename):
     })
 
     return resp
+
+
+# ---------------- SOCKET AUTH ----------------
 
 @socketio.on('connect')
 def handle_connect():
@@ -123,6 +165,8 @@ def handle_disconnect():
         logging.info(f"{user['username']} disconnected")
 
 
+# ---------------- SOCKET EVENTS ----------------
+
 @socketio.on('join')
 def on_join(data):
     socket_handlers.handle_join(socketio, data)
@@ -137,6 +181,8 @@ def on_check_stream(data):
 def on_chat(data):
     socket_handlers.handle_chat(socketio, data)
 
+
+# ---------------- START SERVER ----------------
 
 if __name__ == '__main__':
 
