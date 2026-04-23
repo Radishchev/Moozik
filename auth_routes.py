@@ -3,7 +3,10 @@ import jwt
 import datetime
 import bcrypt
 
-from config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_SECONDS
+from google.oauth2 import id_token
+from google.auth.transport import requests as google_requests
+
+from config import JWT_SECRET, JWT_ALGORITHM, JWT_EXPIRATION_SECONDS, GOOGLE_CLIENT_ID
 from models import create_user, get_user_by_username, get_user_by_id
 
 auth_bp = Blueprint("auth", __name__)
@@ -90,12 +93,11 @@ def register():
         "avatar_color": "#4F46E5"
     }))
 
-    # set secure cookie
     response.set_cookie(
         "token",
         token,
         httponly=True,
-        secure=False,      # change to True when using HTTPS
+        secure=False,  # change to True in production
         samesite="Strict",
         max_age=JWT_EXPIRATION_SECONDS
     )
@@ -136,6 +138,78 @@ def login():
         samesite="Strict",
         max_age=JWT_EXPIRATION_SECONDS
     )
+
+    return response
+
+
+# ---------------- GOOGLE LOGIN ----------------
+
+@auth_bp.route("/api/google-login", methods=["POST"])
+def google_login():
+
+    data = request.json
+    credential = data.get("credential")
+
+    if not credential:
+        return jsonify({"error": "Missing credential"}), 400
+
+    try:
+
+        idinfo = id_token.verify_oauth2_token(
+            credential,
+            google_requests.Request(),
+            GOOGLE_CLIENT_ID
+        )
+
+        email = idinfo.get("email")
+
+        if not email:
+            return jsonify({"error": "Invalid Google account"}), 400
+
+        # check if user exists
+        user = get_user_by_username(email)
+
+        if not user:
+
+            # create user automatically
+            create_user(
+                username=email,
+                email=email,
+                password="GOOGLE_AUTH"
+            )
+
+            user = get_user_by_username(email)
+
+        token = generate_token(user)
+
+        response = make_response(jsonify({
+            "username": user["username"],
+            "avatar_color": "#4F46E5"
+        }))
+
+        response.set_cookie(
+            "token",
+            token,
+            httponly=True,
+            secure=False,
+            samesite="Strict",
+            max_age=JWT_EXPIRATION_SECONDS
+        )
+
+        return response
+
+    except ValueError:
+        return jsonify({"error": "Invalid Google token"}), 401
+
+
+# ---------------- LOGOUT ----------------
+
+@auth_bp.route("/api/logout", methods=["POST"])
+def logout():
+
+    response = make_response(jsonify({"message": "Logged out"}))
+
+    response.delete_cookie("token")
 
     return response
 

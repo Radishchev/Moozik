@@ -1,3 +1,5 @@
+// ---------------- LOGIN ----------------
+
 async function handleLogin(e){
 
     e.preventDefault()
@@ -25,6 +27,8 @@ async function handleLogin(e){
 
 }
 
+
+// ---------------- REGISTER ----------------
 
 async function handleRegister(e){
 
@@ -55,6 +59,98 @@ async function handleRegister(e){
 }
 
 
+
+async function handleGoogleResponse(response){
+
+    try{
+
+        const res = await fetch("/api/google-login",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            credentials:"include",
+            body:JSON.stringify({
+                credential: response.credential
+            })
+        });
+
+        if(res.ok){
+            window.location = "/rooms";
+        }else{
+            alert("Google login failed");
+        }
+
+    }catch(err){
+        console.error(err);
+    }
+
+}
+
+
+// ---------------- GOOGLE BUTTON ----------------
+
+function googleLogin(){
+
+    if(!window.google){
+        console.error("Google script not loaded")
+        return
+    }
+
+    google.accounts.id.initialize({
+        client_id: "154714697233-tbadlqhrv6je2hma95u6i8ndsjqjk7pe.apps.googleusercontent.com",
+        callback: handleGoogleResponse
+    });
+
+    google.accounts.id.prompt();
+
+}
+
+
+// ---------------- TAB SWITCHING ----------------
+
+function setupTabs(){
+
+    document.querySelectorAll('.auth-tab').forEach(tab => {
+
+        tab.addEventListener('click', function(){
+
+            const tabName = this.getAttribute('data-tab')
+
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'))
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'))
+
+            this.classList.add('active')
+            document.getElementById(tabName + 'Form').classList.add('active')
+
+        })
+
+    })
+
+
+    document.querySelectorAll('.switch-tab').forEach(link => {
+
+        link.addEventListener('click', function(e){
+
+            e.preventDefault()
+
+            const tabName = this.getAttribute('data-tab')
+
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'))
+            document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'))
+
+            document.querySelector('[data-tab="' + tabName + '"]').classList.add('active')
+            document.getElementById(tabName + 'Form').classList.add('active')
+
+        })
+
+    })
+
+}
+
+
+// ---------------- INIT ----------------
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const loginForm = document.getElementById("loginForm")
@@ -67,5 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if(registerForm){
         registerForm.addEventListener("submit",handleRegister)
     }
+
+    setupTabs()
 
 })

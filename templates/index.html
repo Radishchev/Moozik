@@ -25,13 +25,38 @@ Experience the magic of listening to music together with friends in real time. C
 
 <div class="actions">
 
-<a href="/login" class="btn-primary">
+<button onclick="getStarted()" class="btn-primary">
 🎵 Get Started
-</a>
-
+</button>
 </div>
 
 </div>
+
+<script>
+    
+async function getStarted(){
+
+  try{
+
+    const res = await fetch("/api/me",{
+      credentials: "include"
+    })
+
+    if(res.ok){
+      window.location = "/rooms"
+    }else{
+      window.location = "/login"
+    }
+
+  }catch(err){
+    window.location = "/login"
+  }
+
+}
+
+checkSession()
+
+</script>
 
 </body>
 </html>

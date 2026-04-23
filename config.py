@@ -15,8 +15,8 @@ FFMPEG_PATH = "ffmpeg"
 
 DATABASE_PATH = os.path.join(BASE_DIR, "users.db")
 
-# JWT settings
 JWT_SECRET = os.getenv("JWT_SECRET")
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 
 if not JWT_SECRET:
     raise Exception("JWT_SECRET environment variable not set!")
