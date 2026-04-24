@@ -30,10 +30,48 @@ function appendMessage(user, msg) {
   chat.scrollTop = chat.scrollHeight;
 }
 
+async function logout() {
+
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  if (logoutBtn) {
+    logoutBtn.disabled = true;
+    logoutBtn.textContent = 'Logging out...';
+  }
+
+  try {
+
+    const res = await fetch('/api/logout', {
+      method: 'POST',
+      credentials: 'include'
+    });
+
+    if (!res.ok) {
+      throw new Error('Logout failed');
+    }
+
+    window.location = '/';
+
+  } catch (err) {
+
+    if (logoutBtn) {
+      logoutBtn.disabled = false;
+      logoutBtn.textContent = 'Logout';
+    }
+
+    appendMessage('System', 'Could not log out. Please try again.');
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
   const sendBtn = document.getElementById('sendBtn');
   const msgInput = document.getElementById('msgInput');
+  const logoutBtn = document.getElementById('logoutBtn');
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', logout);
+  }
 
   if (sendBtn && msgInput) {
 

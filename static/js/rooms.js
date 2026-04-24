@@ -2,6 +2,40 @@ function enterRoom(code){
     window.location = `/room/${code}`
 }
 
+async function logout(){
+
+    const logoutBtn = document.getElementById("logoutBtn")
+
+    if(logoutBtn){
+        logoutBtn.disabled = true
+        logoutBtn.textContent = "Logging out..."
+    }
+
+    try{
+
+        const res = await fetch("/api/logout",{
+            method:"POST",
+            credentials:"include"
+        })
+
+        if(!res.ok){
+            throw new Error("Logout failed")
+        }
+
+        window.location = "/"
+
+    }catch(err){
+
+        if(logoutBtn){
+            logoutBtn.disabled = false
+            logoutBtn.textContent = "Logout"
+        }
+
+        alert("Could not log out. Please try again.")
+    }
+
+}
+
 async function loadRooms(){
 
     const res = await fetch("/api/rooms/public",{
@@ -108,5 +142,11 @@ async function joinPrivate(){
 
 
 document.addEventListener("DOMContentLoaded", () => {
+    const logoutBtn = document.getElementById("logoutBtn")
+
+    if(logoutBtn){
+        logoutBtn.addEventListener("click", logout)
+    }
+
     loadRooms()
 })

@@ -9,12 +9,7 @@ document.body.appendChild(audio);
 let seekBar = document.getElementById('seek');
 let curTime = document.getElementById('curTime');
 let durTime = document.getElementById('durTime');
-let playPauseBtn = document.getElementById('playPauseBtn');
-let playIcon = document.getElementById('playIcon');
-let pauseIcon = document.getElementById('pauseIcon');
 let volumeControl = document.getElementById('volumeControl');
-let nextBtn = document.getElementById('nextBtn');
-let prevBtn = document.getElementById('prevBtn');
 
 // Set initial volume
 if(volumeControl){
@@ -36,8 +31,6 @@ function handleStop() {
   if(seekBar) seekBar.value = 0
   if(curTime) curTime.textContent = '0:00'
   if(durTime) durTime.textContent = '0:00'
-  
-  updatePlayPauseIcon();
 }
 
 function handleSongChange(data) {
@@ -124,52 +117,10 @@ function formatTime(sec) {
   return m + ':' + String(s).padStart(2, '0')
 }
 
-function updatePlayPauseIcon() {
-  if(playIcon && pauseIcon) {
-    if(audio.paused) {
-      playIcon.style.display = 'block';
-      pauseIcon.style.display = 'none';
-    } else {
-      playIcon.style.display = 'none';
-      pauseIcon.style.display = 'block';
-    }
-  }
-}
-
-// Play/Pause button
-if(playPauseBtn) {
-  playPauseBtn.addEventListener('click', () => {
-    if(audio.paused) {
-      audio.play().catch(() => {});
-    } else {
-      audio.pause();
-    }
-    updatePlayPauseIcon();
-  });
-}
-
-// Audio play/pause events for icon sync
-audio.addEventListener('play', updatePlayPauseIcon);
-audio.addEventListener('pause', updatePlayPauseIcon);
-
 // Volume control
 if(volumeControl) {
   volumeControl.addEventListener('input', (e) => {
     audio.volume = e.target.value / 100;
-  });
-}
-
-// Next button
-if(nextBtn && typeof socket !== 'undefined') {
-  nextBtn.addEventListener('click', () => {
-    socket.emit('next_song');
-  });
-}
-
-// Previous button
-if(prevBtn && typeof socket !== 'undefined') {
-  prevBtn.addEventListener('click', () => {
-    socket.emit('prev_song');
   });
 }
 
@@ -178,6 +129,12 @@ if(seekBar){
     audio.currentTime = seekBar.value
   })
 }
+
+document.addEventListener('click', () => {
+  if(audio.paused && audio.src){
+    audio.play().catch(() => {})
+  }
+}, { once: true })
 
 setInterval(() => {
 

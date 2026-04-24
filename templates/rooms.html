@@ -32,7 +32,9 @@ body{
   display:flex;
   align-items:center;
   justify-content:space-between;
+  gap:16px;
   margin-bottom:40px;
+  flex-wrap:wrap;
 }
 
 .page-title{
@@ -44,6 +46,32 @@ body{
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
   margin:0;
+}
+
+.header-actions{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-left:auto;
+}
+
+.btn-logout{
+  padding:11px 20px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.12);
+  background:rgba(255,255,255,0.03);
+  color:var(--text);
+  font-family:var(--font-display);
+  font-size:14px;
+  font-weight:700;
+  cursor:pointer;
+  transition:var(--transition);
+}
+
+.btn-logout:hover{
+  background:rgba(255, 77, 109, 0.12);
+  border-color:rgba(255, 77, 109, 0.4);
+  transform:translateY(-1px);
 }
 
 .section{
@@ -209,6 +237,9 @@ body{
 
 <div class="page-header">
 <h1 class="page-title">Moozik Rooms</h1>
+<div class="header-actions">
+<button id="logoutBtn" class="btn-logout" type="button">Logout</button>
+</div>
 </div>
 
 <div class="section">
@@ -216,7 +247,7 @@ body{
 <div class="form-row">
 <div class="form-group" style="flex:1; min-width:200px;">
 <label>Room name</label>
-<input id="roomName" placeholder="Enter a catchy name…" autocomplete="off">
+<input id="roomName" placeholder="Enter a catchy name..." autocomplete="off">
 </div>
 <div class="checkbox-group">
 <input type="checkbox" id="privateRoom">
@@ -241,7 +272,6 @@ body{
 <h2 class="section-title">Public Rooms</h2>
 <div id="roomsList" class="rooms-grid"></div>
 <div id="emptyState" class="empty-state">
-<div class="empty-state-icon">♫</div>
 <p>No public rooms available. Create one to get started!</p>
 </div>
 </div>

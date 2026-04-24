@@ -75,6 +75,7 @@
 
 <header class="topbar">
 <div class="room-title">{{ room_name }}</div>
+<button id="logoutBtn" class="topbar-logout" type="button">Logout</button>
 </header>
 
 <div class="layout">
@@ -83,35 +84,14 @@
 
 <img id="cover" style="background: var(--surface-2);">
 
-<div id="title">🎵 No song playing</div>
-<div id="status">Waiting for a song…</div>
+<div id="title">No song playing</div>
+<div id="status">Waiting for a song...</div>
 
 <input type="range" id="seek">
 
 <div class="time">
 <span id="curTime">0:00</span>
 <span id="durTime">0:00</span>
-</div>
-
-<div class="controls">
-<button id="prevBtn" class="control-btn" title="Previous">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-<path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
-</svg>
-</button>
-<button id="playPauseBtn" class="control-btn control-btn-primary" title="Play/Pause">
-<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="playIcon">
-<path d="M8 5v14l11-7z"/>
-</svg>
-<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" id="pauseIcon" style="display:none;">
-<path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z"/>
-</svg>
-</button>
-<button id="nextBtn" class="control-btn" title="Next">
-<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-<path d="M16 18h2V6h-2zm-11-7l8.5-6v12z"/>
-</svg>
-</button>
 </div>
 
 <div class="volume-control">
@@ -129,7 +109,7 @@
 
 <div class="chat-input-row">
 
-<input id="msgInput" placeholder="Type !play or chat…" autocomplete="off">
+<input id="msgInput" placeholder="Type !play or chat..." autocomplete="off">
 
 <button id="sendBtn">Send</button>
 

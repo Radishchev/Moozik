@@ -15,25 +15,73 @@
 
 <body>
 
+<div id="disclaimerModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle">
+<div class="modal-card">
+<div class="modal-badge">Notice</div>
+<h2 id="disclaimerTitle">Educational Use Warning</h2>
+<p class="modal-copy">
+This music is not ours. This project is made for educational purposes only and is intended for learning, testing, and demonstration.
+</p>
+<button id="closeDisclaimerBtn" class="btn-primary modal-action" type="button">I Understand</button>
+</div>
+</div>
+
 <div class="home">
+<div class="ambient-grid"></div>
+<div class="spotlight spotlight-a"></div>
+<div class="spotlight spotlight-b"></div>
+<div class="noise-line noise-line-a"></div>
+<div class="noise-line noise-line-b"></div>
 
-<h1 class="logo">Moozik</h1>
-
+<section class="hero-panel">
+<div class="hero-copy">
+<div class="eyebrow">Realtime listening rooms</div>
+<h1 class="logo" aria-label="Moozik">
+<span class="logo-primary">Moo</span><span class="logo-accent">zik</span>
+</h1>
 <p class="tagline">
-Experience the magic of listening to music together with friends in real time. Create rooms, share playlists, and vibe together.
+Build a live room, drop a track, and turn group listening into a neon-lit shared session with chat, queues, and nonstop momentum.
 </p>
 
 <div class="actions">
-
-<button onclick="getStarted()" class="btn-primary">
-🎵 Get Started
-</button>
+<button onclick="getStarted()" class="btn-primary">Get Started</button>
 </div>
+
+<div class="hero-metrics">
+<div class="metric-card">
+<span class="metric-value">Live</span>
+<span class="metric-label">chat flowing beside the music</span>
+</div>
+<div class="metric-card">
+<span class="metric-value">Fast</span>
+<span class="metric-label">room setup with instant join flow</span>
+</div>
+<div class="metric-card">
+<span class="metric-value">Shared</span>
+<span class="metric-label">one queue, one room, everyone synced</span>
+</div>
+</div>
+</div>
+
+<div class="hero-showcase">
+<div class="showcase-orb"></div>
+<div class="showcase-card showcase-card-primary">
+<span class="showcase-label">Now building</span>
+<strong>Rooms that feel like a backstage control deck</strong>
+<p>Music on the left, conversation on the right, no clutter in the way.</p>
+</div>
+<div class="showcase-card showcase-card-secondary">
+<span class="showcase-label">Designed for</span>
+<strong>late-night listening parties and quick drop-in sessions</strong>
+<p>Launch fast, keep the vibe high, and let the room do the rest.</p>
+</div>
+</div>
+</section>
 
 </div>
 
 <script>
-    
+
 async function getStarted(){
 
   try{
@@ -54,7 +102,34 @@ async function getStarted(){
 
 }
 
-checkSession()
+const disclaimerModal = document.getElementById('disclaimerModal')
+const closeDisclaimerBtn = document.getElementById('closeDisclaimerBtn')
+
+function closeDisclaimer(){
+  if(disclaimerModal){
+    disclaimerModal.classList.add('hidden')
+  }
+}
+
+if(typeof checkSession === "function"){
+  checkSession()
+}
+
+if(closeDisclaimerBtn && disclaimerModal){
+  closeDisclaimerBtn.addEventListener('click', closeDisclaimer)
+
+  disclaimerModal.addEventListener('click', (event) => {
+    if(event.target === disclaimerModal){
+      closeDisclaimer()
+    }
+  })
+
+  document.addEventListener('keydown', (event) => {
+    if(event.key === 'Escape' && !disclaimerModal.classList.contains('hidden')){
+      closeDisclaimer()
+    }
+  })
+}
 
 </script>
 
